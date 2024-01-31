@@ -6,7 +6,7 @@ import type {
     fetchBaseQuery,
     createApi
   } from "@reduxjs/toolkit/query/react";
-  import type { AmountListProps, GameListProps } from "./types";
+  import type { AmountListProps, GameListProps } from "@/modules/types";
   
   const baseUrl = "https://stage.whgstage.com/";
   

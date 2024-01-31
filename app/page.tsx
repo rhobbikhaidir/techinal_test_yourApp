@@ -1,112 +1,90 @@
-import Image from "next/image";
-import Link from "next/link";
+'use client'
+import React, { useState } from 'react'
+import * as yup from 'yup'
+import { IconPassHide, IconPassShow } from '@/components/assets/icons/icons'
+import FORMIK from '@/modules/formik'
+import { PartialLoginProps } from '@/modules/types'
+import Input from '@/components/Input/Input'
+import helper from '@/modules/helper'
+import Link from 'next/link'
 
 export default function Home() {
+  const [showPass, setShowPass] = useState<boolean>(false)
+  const scheme = yup.object<PartialLoginProps>({
+    email: yup.string().email('Email is not valid').required('Email is required'),
+    password: yup
+      .string()
+      .matches(
+        helper.passwordRegex(),
+        'Password must contain capital, small letters, number and special characters'
+      )
+      .min(8, 'Minimum Length is 8')
+      .required('Password is required')
+  })
+  const initialValues: PartialLoginProps = {
+    email: '',
+    password: ''
+  }
+  const formik = FORMIK.useFormFormik<PartialLoginProps>(scheme, initialValues, (values) =>
+    onLoginHandler(values)
+  )
+
+  const onLoginHandler = (values: PartialLoginProps) => console.log(values)
+
+  const errorData = formik.errors
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <main className='flex min-h-screen flex-col p-9 bg-primary'>
+      {/* <div className='flex flex-row items-center '>
+        <IconBack />
+        <p className='pl-2 text-white font-bold text-sm'>Back</p>
+      </div> */}
+      <div className='flex flex-col items-center justify-center '>
+        <div className='flex flex-col justify-stretch flex-1 items-stretch w-[327px] h-[51px]'>
+          <h2 className='text-2xl text-white font-bold'>Login</h2>
+        </div>
+        <form className='pt-[25px] pb-[40px] flex flex-col'>
+          <Input
+            name='email'
+            id='email'
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            err={Boolean(formik.values.email) && Boolean(errorData.email)}
+            placeholder='Enter Username/Email'
+            value={formik.values.email}
+            type='text'
+            messageErr={errorData && errorData.email}
+          />
+          <Input
+            name='password'
+            id='password'
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            err={Boolean(formik.values.password) && Boolean(errorData.password)}
+            placeholder='Enter Password'
+            value={formik.values.password}
+            type={showPass ? 'text' : 'password'}
+            className=''
+            messageErr={errorData && errorData.password}
+            onClickIcon={() => setShowPass(!showPass)}
+            suffixIcon={showPass ? <IconPassShow /> : <IconPassHide />}
+          />
+        </form>
+        <button
+          className='w-[327px] h-[51px] text-white bg-second rounded-[9px] disabled:opacity-[0.3]'
+          disabled={!formik.isValid}
+        >
+          Login
+        </button>
+        <div className='py-10'>
+          <p className='text-white text-sm'>
+            No account?{' '}
+            <span className='text-sm text-orange-200 border-b-[1px] border-b-orange-200 cursor-pointer'>
+              <Link href='/register'>Register here</Link>
+            </span>
+          </p>
         </div>
       </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <Link
-          href={'/meals'}
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </Link>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
     </main>
-  );
+  )
 }
