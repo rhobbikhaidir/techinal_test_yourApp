@@ -2,6 +2,7 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 // import storage from "redux-persist/lib/storage";
 import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE, persistReducer } from "redux-persist";
 import createWebStorage from "redux-persist/lib/storage/createWebStorage";
+import UserReducer from './user'
 
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { API } from "./api";
@@ -28,7 +29,8 @@ const presistConfig = {
 
 
 const rootReducer = combineReducers({
-    [API.reducerPath] : API.reducer
+  user: UserReducer, // make similar import like this
+  [API.reducerPath]: API.reducer
 })
 
 const persistedReducer = persistReducer(presistConfig, rootReducer)

@@ -1,14 +1,21 @@
 'use client'
 import * as yup from 'yup'
 import { IconBack, IconPassHide, IconPassShow } from '@/components/assets/icons/icons'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import FORMIK from '@/modules/formik'
-import { PartialLoginProps, PartialRegister } from '@/modules/types'
+import { PartialRegister } from '@/modules/types'
 import Link from 'next/link'
 import React, { useState } from 'react'
 import Input from '@/components/Input/Input'
 import helper from '@/modules/helper'
+import { useOnRegisMutation } from '../GlobalRedux/api'
+import Button from '@/components/Button/Button'
+import { useRouter } from 'next/navigation'
 
 const RegisterPage = () => {
+  const router = useRouter();
+  const [onRegister, register] = useOnRegisMutation()
   const [showPass, setShowPass] = useState<boolean>(false)
   const [confPass, setConfPass] = useState<boolean>(false)
 
@@ -38,7 +45,25 @@ const RegisterPage = () => {
     onRegisHandler(values)
   )
 
-  const onRegisHandler = (values: PartialRegister) => console.log(values)
+  const onRegisHandler = (values: PartialRegister)  => {
+    const payload = {
+      email: values.email,
+      username: values.username,
+      password: values.password,
+      confirmPassword: ''
+    }
+    onRegister(payload)
+      .unwrap()
+      .then((res) => {
+        toast.success(res.message, {
+          position: 'top-right'
+        })
+        setTimeout(() => {
+          router.push('/')
+        }, 3000)
+      })
+
+  }
 
   const errorData = formik.errors
 
@@ -55,7 +80,7 @@ const RegisterPage = () => {
         <div className='flex flex-col justify-stretch flex-1 items-stretch w-[327px] h-[51px]'>
           <h2 className='text-2xl text-white font-bold'>Register</h2>
         </div>
-        <form className='pt-[25px] pb-[40px] flex flex-col'>
+        <form className='pt-[25px]  flex flex-col' onSubmit={formik.handleSubmit}>
           <Input
             name='email'
             id='email'
@@ -97,31 +122,25 @@ const RegisterPage = () => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             err={Boolean(formik.values.confirmPassword) && Boolean(errorData.confirmPassword)}
-            placeholder='Confirm confirmPassword'
+            placeholder='Confirm Password'
             value={formik.values.confirmPassword}
-            type={confPass ? 'text' : 'confirmPassword'}
+            type={confPass ? 'text' : 'password'}
             messageErr={errorData && errorData.confirmPassword}
             onClickIcon={() => setConfPass(!confPass)}
             suffixIcon={confPass ? <IconPassShow /> : <IconPassHide />}
           />
+          <Button title='Register' disabled={!formik.isValid} isLoading={register.isLoading} />
         </form>
-        <button
-          type='button'
-          onClick={() => formik.handleSubmit()}
-          className='w-[327px] h-[51px] text-white bg-second rounded-[9px] disabled:opacity-[0.3]'
-          disabled={!formik.isValid}
-        >
-          Login
-        </button>
         <div className='py-10'>
           <p className='text-white text-sm'>
-            No account?{' '}
+            Have an account?{' '}
             <span className='text-sm text-orange-200 border-b-[1px] border-b-orange-200 cursor-pointer'>
               <Link href='/'>Login Here</Link>
             </span>
           </p>
         </div>
       </div>
+      <ToastContainer />
     </main>
   )
 }

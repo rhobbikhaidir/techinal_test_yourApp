@@ -1,28 +1,5 @@
 import React from 'react'
 
-export type GameListProps = {
-  categories: string[]
-  name: string
-  image: string
-  id: string
-}
-
-export type AmountListProps = {
-  game: string
-  amount: number
-}
-
-export type GameListResProps = {
-  data: GameListProps[]
-}
-
-export type ParamsFilterProps = {
-  _id: string
-  title: string
-  filter: string
-  url: string
-}
-
 export type InputProps = {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   type: string
@@ -41,8 +18,13 @@ export type InputProps = {
 }
 
 export type PartialLoginProps = {
-  email: string
+  email: string,
+  username: string,
   password: string
+}
+
+export type RegisProps = {
+  message: string
 }
 
 
@@ -52,3 +34,28 @@ export type PartialRegister = {
   password: string
   confirmPassword: string
 }
+
+export type UserProps = {
+  access_token: string
+  message: string
+}
+
+
+export type PartialLoginTempProps = {
+  email: string,
+  password: string
+}
+
+
+export type ResponseProps<T> = {
+  message: string,
+  data: T
+}
+
+
+export type ProfileProps= {
+  email: string,
+  username: string,
+  interests: string[]
+}
+

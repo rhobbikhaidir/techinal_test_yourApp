@@ -1,16 +1,18 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import * as yup from 'yup'
 import { IconPassHide, IconPassShow } from '@/components/assets/icons/icons'
 import FORMIK from '@/modules/formik'
-import { PartialLoginProps } from '@/modules/types'
+import { PartialLoginTempProps } from '@/modules/types'
 import Input from '@/components/Input/Input'
 import helper from '@/modules/helper'
 import Link from 'next/link'
+import { useGetProfileMutation, useOnloginMutation } from './GlobalRedux/api'
 
 export default function Home() {
+  const [onLogin, login ] = useOnloginMutation()
   const [showPass, setShowPass] = useState<boolean>(false)
-  const scheme = yup.object<PartialLoginProps>({
+  const scheme = yup.object<PartialLoginTempProps>({
     email: yup.string().email('Email is not valid').required('Email is required'),
     password: yup
       .string()
@@ -21,29 +23,34 @@ export default function Home() {
       .min(8, 'Minimum Length is 8')
       .required('Password is required')
   })
-  const initialValues: PartialLoginProps = {
+  const initialValues: PartialLoginTempProps = {
     email: '',
     password: ''
   }
-  const formik = FORMIK.useFormFormik<PartialLoginProps>(scheme, initialValues, (values) =>
+  const formik = FORMIK.useFormFormik<PartialLoginTempProps>(scheme, initialValues, (values) =>
     onLoginHandler(values)
   )
 
-  const onLoginHandler = (values: PartialLoginProps) => console.log(values)
+  const onLoginHandler = (values: PartialLoginTempProps) => {
+    const payload = {
+      email: values.email,
+      username: values.email,
+      password: values.password
+    }
+    onLogin(payload)
+  }
+
+
 
   const errorData = formik.errors
 
   return (
     <main className='flex min-h-screen flex-col p-9 bg-primary'>
-      {/* <div className='flex flex-row items-center '>
-        <IconBack />
-        <p className='pl-2 text-white font-bold text-sm'>Back</p>
-      </div> */}
       <div className='flex flex-col items-center justify-center '>
         <div className='flex flex-col justify-stretch flex-1 items-stretch w-[327px] h-[51px]'>
           <h2 className='text-2xl text-white font-bold'>Login</h2>
         </div>
-        <form className='pt-[25px] pb-[40px] flex flex-col'>
+        <form className='pt-[25px] flex flex-col' onSubmit={formik.handleSubmit}>
           <Input
             name='email'
             id='email'
@@ -64,18 +71,19 @@ export default function Home() {
             placeholder='Enter Password'
             value={formik.values.password}
             type={showPass ? 'text' : 'password'}
-            className=''
             messageErr={errorData && errorData.password}
             onClickIcon={() => setShowPass(!showPass)}
             suffixIcon={showPass ? <IconPassShow /> : <IconPassHide />}
           />
-        </form>
-        <button
-          className='w-[327px] h-[51px] text-white bg-second rounded-[9px] disabled:opacity-[0.3]'
+          <button
+          type='submit'
+          className='w-[327px] h-[51px] text-white bg-second rounded-[9px] disabled:opacity-[0.3] mt-[40px]'
           disabled={!formik.isValid}
         >
           Login
         </button>
+        </form>
+        
         <div className='py-10'>
           <p className='text-white text-sm'>
             No account?{' '}
