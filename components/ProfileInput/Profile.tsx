@@ -43,7 +43,6 @@ const Profile = () => {
           weight: (res.data.weight && res.data.weight) || 0,
           interests: (!isEmpty(res.data.interests) && res.data.interests) || []
         }
-        console.log(valueUser, 'blablal')
         if (!isEmpty(res.data.name || res.data.birthday || res.data.height || res.data.birthday)) {
           dispatch(showDataReducer(true))
         }

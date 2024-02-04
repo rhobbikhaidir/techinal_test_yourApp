@@ -43,6 +43,25 @@ const UserSlice = createSlice({
     },
     showDataReducer: (state, action) => {
       state.isShowData = action.payload
+    },
+    resetStore: (state) => {
+      const resetState = {
+        access_token: '',
+        email: '',
+        profile: {
+          name: '',
+          birthday: '',
+          height: 0,
+          weight: 0,
+          interests: []
+        },
+        img: '',
+        horoscope: '',
+        zodiac: '',
+        gender: '',
+        isShowData: false
+      }
+      state = resetState
     }
   }
 })
@@ -54,6 +73,7 @@ export const {
   horoscopeReducer,
   zodiacReducer,
   genderReducer,
-  showDataReducer
+  showDataReducer,
+  resetStore
 } = UserSlice.actions
 export default UserSlice.reducer
