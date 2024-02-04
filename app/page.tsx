@@ -5,7 +5,7 @@ import { IconPassHide, IconPassShow } from '@/components/assets/icons/icons'
 import FORMIK from '@/modules/formik'
 import { PartialLoginTempProps } from '@/modules/types'
 import Input from '@/components/Input/Input'
-import helper from '@/modules/helper'
+import GlobalHelper from '@/modules/GlobalHelper'
 import Link from 'next/link'
 import { useGetProfileMutation, useOnloginMutation } from './GlobalRedux/api'
 
@@ -17,7 +17,7 @@ export default function Home() {
     password: yup
       .string()
       .matches(
-        helper.passwordRegex(),
+        GlobalHelper.passwordRegex(),
         'Password must contain capital, small letters, number and special characters'
       )
       .min(8, 'Minimum Length is 8')

@@ -1,3 +1,4 @@
+import { StaticImport } from 'next/dist/shared/lib/get-img-props'
 import React from 'react'
 
 export type InputProps = {
@@ -14,19 +15,18 @@ export type InputProps = {
   suffixIcon?: React.ReactNode
   onClickIcon?: () => void
   className?: string
-
+  autocomplete?: string
 }
 
 export type PartialLoginProps = {
-  email: string,
-  username: string,
+  email: string
+  username: string
   password: string
 }
 
 export type RegisProps = {
   message: string
 }
-
 
 export type PartialRegister = {
   email: string
@@ -37,25 +37,40 @@ export type PartialRegister = {
 
 export type UserProps = {
   access_token: string
-  message: string
+  email: string
+  profile: PartialUpdateProps
+  img: string | StaticImport
+  zodiac: string
+  horoscope: string
+  gender: string
 }
 
-
 export type PartialLoginTempProps = {
-  email: string,
+  email: string
   password: string
 }
 
-
 export type ResponseProps<T> = {
-  message: string,
+  message: string
   data: T
 }
 
-
-export type ProfileProps= {
-  email: string,
-  username: string,
+export type ProfileProps = {
+  email: string
+  username: string
   interests: string[]
 }
 
+export type InterestProps = {
+  email: string
+  username: string
+  interests: string[]
+}
+
+export type PartialUpdateProps = {
+  name: string
+  birthday: string
+  height: number | string
+  weight: number | string
+  interests: string[]
+}

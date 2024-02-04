@@ -4,8 +4,9 @@ import React from 'react'
 
 const Input = (props: InputProps) => {
   return (
-    <div className={`relative w-[327px] h-[51px] py-[${props.py ?? '40px'}]`}>
+    <div className={`relative w-[327px] h-[51px] py-[40px]`}>
       <input
+        autoComplete={props.autocomplete}
         name={props.name}
         id={props.id}
         placeholder={props.placeholder}
@@ -14,7 +15,7 @@ const Input = (props: InputProps) => {
         value={props.value}
         className={`w-[327px] h-[51px] bg-[#ffffff0f] rounded-[9px] text-white p-[18px] focus:border-none ${props.err && 'border-2 border-red-900 focus:border-red-900 focus:border-2'} ${props.className}`}
       />
-        {props.err && <p className='text-xs text-red-600 py-[4px]'>{props.messageErr}</p>}
+      {props.err && <p className='text-xs text-red-600 py-[4px]'>{props.messageErr}</p>}
       {props.suffixIcon && (
         <div
           className='absolute top- bottom-0 right-0 pr-3 flex items-center text-sm leading-5 text-white cursor-pointer'

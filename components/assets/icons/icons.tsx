@@ -52,3 +52,34 @@ export const IconLoading = () => {
     </svg>
   )
 }
+
+export const IconLogout = () => {
+  return (
+    <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'>
+      <path fill='#FFF' d='M16 13v-2H7V8l-5 4 5 4v-3z'></path>
+      <path
+        fill='#FFF'
+        d='M20 3h-9c-1.103 0-2 .897-2 2v4h2V5h9v14h-9v-4H9v4c0 1.103.897 2 2 2h9c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2z'
+      ></path>
+    </svg>
+  )
+}
+
+export const IconEdit = () => {
+  return (
+    <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'>
+      <path
+        fill='#FFF'
+        d='M8.707 19.707 18 10.414 13.586 6l-9.293 9.293a1.003 1.003 0 0 0-.263.464L3 21l5.242-1.03c.176-.044.337-.135.465-.263zM21 7.414a2 2 0 0 0 0-2.828L19.414 3a2 2 0 0 0-2.828 0L15 4.586 19.414 9 21 7.414z'
+      ></path>
+    </svg>
+  )
+}
+
+export const IconPlus = () => {
+  return (
+    <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'>
+      <path fill='#FFF' d='M19 11h-6V5h-2v6H5v2h6v6h2v-6h6z'></path>
+    </svg>
+  )
+}

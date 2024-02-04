@@ -8,7 +8,7 @@ import { PartialRegister } from '@/modules/types'
 import Link from 'next/link'
 import React, { useState } from 'react'
 import Input from '@/components/Input/Input'
-import helper from '@/modules/helper'
+import GlobalHelper from '@/modules/GlobalHelper'
 import { useOnRegisMutation } from '../GlobalRedux/api'
 import Button from '@/components/Button/Button'
 import { useRouter } from 'next/navigation'
@@ -25,7 +25,7 @@ const RegisterPage = () => {
     password: yup
       .string()
       .matches(
-        helper.passwordRegex(),
+        GlobalHelper.passwordRegex(),
         'Password must contain capital, small letters, number and special characters'
       )
       .min(8, 'Minimum Length is 8')
@@ -104,6 +104,7 @@ const RegisterPage = () => {
             messageErr={errorData && errorData.username}
           />
           <Input
+            autocomplete='password'
             name='password'
             id='password'
             onChange={formik.handleChange}
@@ -117,6 +118,7 @@ const RegisterPage = () => {
             suffixIcon={showPass ? <IconPassShow /> : <IconPassHide />}
           />
           <Input
+            autocomplete='confirmPassword'
             name='confirmPassword'
             id='confirmPassword'
             onChange={formik.handleChange}
@@ -129,7 +131,7 @@ const RegisterPage = () => {
             onClickIcon={() => setConfPass(!confPass)}
             suffixIcon={confPass ? <IconPassShow /> : <IconPassHide />}
           />
-          <Button title='Register' disabled={!formik.isValid} isLoading={register.isLoading} />
+          <Button title='Register' disabled={!formik.isValid} isLoading={true} />
         </form>
         <div className='py-10'>
           <p className='text-white text-sm'>
