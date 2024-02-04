@@ -1,23 +1,26 @@
 'use client'
-import React, { useRef, useState } from 'react'
-import { IconEdit, IconPlus } from '../assets/icons/icons'
-import { isEmpty } from 'lodash'
-import { useDispatch, useSelector } from 'react-redux'
-import { UserProps } from '@/modules/types'
+import { useOnUpdateProfileMutation } from '@/app/GlobalRedux/api'
 import { AppDispatch } from '@/app/GlobalRedux/store'
 import {
   genderReducer,
   horoscopeReducer,
   imageReducer,
   profileReducer,
+  showDataReducer,
   zodiacReducer
 } from '@/app/GlobalRedux/user'
-import Image from 'next/image'
 import GlobalHelper from '@/modules/GlobalHelper'
+import { PartialUpdateProps, UserProps } from '@/modules/types'
+import { isEmpty } from 'lodash'
+import Image from 'next/image'
+import React, { useRef, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
+import { IconEdit, IconLoading, IconPlus } from '../assets/icons/icons'
 
 const AboutInput = () => {
   const dispatch = useDispatch<AppDispatch>()
-
+  const [onUpdateProfile, updateProfile] = useOnUpdateProfileMutation()
   const { user } = useSelector((state: { user: UserProps }) => state)
   const labelAbout = [
     'Display Name',
@@ -28,7 +31,6 @@ const AboutInput = () => {
     'Height',
     'Weight'
   ]
-
 
   const [activeAbout, setActiveAbout] = useState<boolean>(false)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
@@ -73,16 +75,44 @@ const AboutInput = () => {
         })
       )
     }
-    console.log(name, value, 'blablabal')
   }
+
+  const handleSave = () => {
+    const payload: PartialUpdateProps = {
+      name: user.profile.name,
+      birthday: user.profile.birthday,
+      height: !isEmpty(user.profile.height) ? Number(user.profile.height) : null ,
+      weight:!isEmpty(user.profile.weight) ? Number(user.profile.weight) : null,
+      interests: user.profile.interests
+    }
+    onUpdateProfile(payload)
+      .unwrap()
+      .then((res) => {
+        dispatch(showDataReducer(true))
+        toast.success(res.message, {
+          position: 'top-right'
+        })
+        setActiveAbout(false)
+      })
+  }
+
 
   return (
     <>
       {activeAbout ? (
         <div className='flex flex-col w-full  bg-[#0E191F] p-4  '>
-          <div className='flex flex-row self-end justify-start items-start transform active:scale-90 transition-transform '>
-            <p className='text-md text-white font-semibold '>Save & Updates</p>
-          </div>
+          <button className='flex flex-row self-end justify-start items-start transform active:scale-90 transition-transform '>
+            <button className='text-md text-white font-semibold' disabled={updateProfile.isLoading} onClick={handleSave}>
+              {updateProfile.isLoading ? (
+                <div className='flex flex-row items-center'>
+                  <span className='text-sm pr-1'>Wait</span>
+                  <IconLoading />
+                </div>
+              ) : (
+                'Save & Updates'
+              )}
+            </button>
+          </button>
           <div className=' space-y-3'>
             <div>
               <div className='flex flex-row space-x-2 items-center ' onClick={handleFocus}>
@@ -200,20 +230,52 @@ const AboutInput = () => {
           </div>
         </div>
       ) : (
-        <div className='flex flex-col py-4 px-6 w-full bg-[#0E191F] space-y-14'>
+        <div className='flex flex-col py-4 px-6 w-full bg-[#0E191F] space-y-4'>
           <div className='flex flex-row items-start justify-between '>
             <p className='text-md text-white font-semibold'>About</p>
             <button
-              className='outline-none focus:ring-4  transform active:scale-50 transition-transform'
+              className='outline-none focus:ring-4  transform active:scale-90 transition-transform'
               onClick={() => setActiveAbout(true)}
             >
               <IconEdit />
             </button>
           </div>
           <div className='flex flex-col item-start'>
-            <p className='text-md text-[#FFFFFF] opacity-55 font-medium'>
-              Add in your your to help others know you better
-            </p>
+            {!user.isShowData && (
+              <p className='text-md text-[#FFFFFF] opacity-55 font-medium'>
+                Add in your your to help others know you better
+              </p>
+            )}
+            {user.isShowData && (
+              <div className='flex flex-col items-start space-y-3'>
+                <div className='flex flex-row space-x-2'>
+                  <p className='text-md text-[#FFFFFF] opacity-55 font-medium'>Birthday:</p>
+                  <p className='text-md text-white font-semibold'>
+                    {GlobalHelper.formatDate(user.profile.birthday)}
+                  </p>
+                </div>
+                <div className='flex flex-row space-x-2'>
+                  <p className='text-md text-[#FFFFFF] opacity-55 font-medium'>Horoscope:</p>
+                  <p className='text-md text-white font-semibold'>{user.horoscope || '-'}</p>
+                </div>
+                <div className='flex flex-row space-x-2'>
+                  <p className='text-md text-[#FFFFFF] opacity-55 font-medium'>Zodiac:</p>
+                  <p className='text-md text-white font-semibold'>{user.zodiac || '-'}</p>
+                </div>
+                <div className='flex flex-row space-x-2'>
+                  <p className='text-md text-[#FFFFFF] opacity-55 font-medium'>Height:</p>
+                  <p className='text-md text-white font-semibold'>
+                    {user.profile.height || '-'} cm
+                  </p>
+                </div>
+                <div className='flex flex-row space-x-2'>
+                  <p className='text-md text-[#FFFFFF] opacity-55 font-medium'>Weight:</p>
+                  <p className='text-md text-white font-semibold'>
+                    {user.profile.weight || '-'} kg{' '}
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

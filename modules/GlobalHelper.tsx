@@ -1,3 +1,6 @@
+import { isEmpty } from "lodash"
+import moment from "moment"
+
 class GlobalHelper {
   static passwordRegex = () => /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/g
 
@@ -45,6 +48,32 @@ class GlobalHelper {
     // Return the corresponding zodiac sign
     return zodiacSigns[index];
   }
+  static logout = async (callback: CallableFunction) => {
+    localStorage.clear()
+    return callback()
+  }
+
+  static getAge = (val: string): number  => {
+    const birthdate = new Date(val)
+    const today = new Date();
+    const birthYear = birthdate.getFullYear();
+    const birthMonth = birthdate.getMonth();
+    const birthDay = birthdate.getDate();
+  
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth();
+    const currentDay = today.getDate();
+  
+    let age = currentYear - birthYear;
+  
+    // Adjust age if the birthday hasn't occurred yet this year
+    if (currentMonth < birthMonth || (currentMonth === birthMonth && currentDay < birthDay)) {
+      age--;
+    }
+  
+    return age;
+  }
+  static formatDate = (value: string) => !isEmpty(value) ?  moment(value).format('DD/MM/YYYY') : '-'
 }
 
 export default GlobalHelper

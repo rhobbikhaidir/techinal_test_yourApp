@@ -131,7 +131,7 @@ const RegisterPage = () => {
             onClickIcon={() => setConfPass(!confPass)}
             suffixIcon={confPass ? <IconPassShow /> : <IconPassHide />}
           />
-          <Button title='Register' disabled={!formik.isValid} isLoading={true} />
+          <Button title='Register' disabled={!formik.isValid} isLoading={register.isLoading} />
         </form>
         <div className='py-10'>
           <p className='text-white text-sm'>

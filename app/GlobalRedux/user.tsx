@@ -7,21 +7,25 @@ const initialState: UserProps = {
   profile: {
     name: '',
     birthday: '',
-    height: '',
-    weight: '',
+    height: 0,
+    weight: 0,
     interests: []
   },
   img: '',
   horoscope: '',
   zodiac: '',
-  gender: ''
+  gender: '',
+  isShowData: false
 }
 
 const UserSlice = createSlice({
   name: 'User',
   initialState,
   reducers: {
-    getUser: (state, action) => (state = action.payload),
+    getUser: (state, action) => {
+      state.access_token = action.payload.access_token
+      state.email = action.payload.email
+    },
     profileReducer: (state, action) => {
       state.profile = action.payload
     },
@@ -36,6 +40,9 @@ const UserSlice = createSlice({
     },
     genderReducer: (state, action) => {
       state.gender = action.payload
+    },
+    showDataReducer: (state, action) => {
+      state.isShowData = action.payload
     }
   }
 })
@@ -46,6 +53,7 @@ export const {
   imageReducer,
   horoscopeReducer,
   zodiacReducer,
-  genderReducer
+  genderReducer,
+  showDataReducer
 } = UserSlice.actions
 export default UserSlice.reducer

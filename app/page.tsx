@@ -1,16 +1,24 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import * as yup from 'yup'
-import { IconPassHide, IconPassShow } from '@/components/assets/icons/icons'
+import { IconLoading, IconPassHide, IconPassShow } from '@/components/assets/icons/icons'
 import FORMIK from '@/modules/formik'
 import { PartialLoginTempProps } from '@/modules/types'
 import Input from '@/components/Input/Input'
 import GlobalHelper from '@/modules/GlobalHelper'
 import Link from 'next/link'
-import { useGetProfileMutation, useOnloginMutation } from './GlobalRedux/api'
+import { useOnloginMutation } from './GlobalRedux/api'
+import { ToastContainer, toast } from 'react-toastify'
+import { useRouter } from 'next/navigation'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from './GlobalRedux/store'
+import { getUser } from './GlobalRedux/user'
+import Button from '@/components/Button/Button'
 
 export default function Home() {
-  const [onLogin, login ] = useOnloginMutation()
+  const dispatch = useDispatch<AppDispatch>()
+  const router = useRouter()
+  const [onLogin, login] = useOnloginMutation()
   const [showPass, setShowPass] = useState<boolean>(false)
   const scheme = yup.object<PartialLoginTempProps>({
     email: yup.string().email('Email is not valid').required('Email is required'),
@@ -38,9 +46,23 @@ export default function Home() {
       password: values.password
     }
     onLogin(payload)
+      .unwrap()
+      .then((res) => {
+        console.log(res, 'blablal')
+        dispatch(
+          getUser({
+            access_token: res.access_token,
+            email: formik.values.email
+          })
+        )
+        toast.success(res.message, {
+          position: 'top-right'
+        })
+        setTimeout(() => {
+          router.push('/profile')
+        })
+      })
   }
-
-
 
   const errorData = formik.errors
 
@@ -75,15 +97,8 @@ export default function Home() {
             onClickIcon={() => setShowPass(!showPass)}
             suffixIcon={showPass ? <IconPassShow /> : <IconPassHide />}
           />
-          <button
-          type='submit'
-          className='w-[327px] h-[51px] text-white bg-second rounded-[9px] disabled:opacity-[0.3] mt-[40px]'
-          disabled={!formik.isValid}
-        >
-          Login
-        </button>
+          <Button title='Login' disabled={!formik.isValid} isLoading={login.isLoading} />
         </form>
-        
         <div className='py-10'>
           <p className='text-white text-sm'>
             No account?{' '}
@@ -93,6 +108,7 @@ export default function Home() {
           </p>
         </div>
       </div>
+      <ToastContainer />
     </main>
   )
 }

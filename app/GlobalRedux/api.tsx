@@ -2,6 +2,7 @@ import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolk
 import { fetchBaseQuery, createApi } from '@reduxjs/toolkit/query/react'
 import type {
   InterestProps,
+  LoginProps,
   PartialLoginProps,
   PartialUpdateProps,
   ProfileProps,
@@ -69,7 +70,7 @@ export const API = createApi({
   reducerPath: 'API',
   baseQuery: fetchBase,
   endpoints: (builder) => ({
-    onlogin: builder.mutation<UserProps, PartialLoginProps>({
+    onlogin: builder.mutation<LoginProps, PartialLoginProps>({
       query: (body) => ({
         url: '/api/login',
         method: 'POST',
@@ -92,12 +93,12 @@ export const API = createApi({
     }),
     onUpdateProfile: builder.mutation<ResponseProps<InterestProps>, PartialUpdateProps>({
       query: (body) => ({
-        url: '/api/login',
-        method: 'POST',
+        url: '/api/updateProfile',
+        method: 'PUT',
         body: body
       })
     }),
   })
 })
 
-export const { useOnloginMutation, useOnRegisMutation, useGetProfileMutation } = API
+export const { useOnloginMutation, useOnRegisMutation, useGetProfileMutation, useOnUpdateProfileMutation } = API

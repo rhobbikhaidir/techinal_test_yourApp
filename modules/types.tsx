@@ -43,6 +43,7 @@ export type UserProps = {
   zodiac: string
   horoscope: string
   gender: string
+  isShowData: boolean
 }
 
 export type PartialLoginTempProps = {
@@ -59,6 +60,11 @@ export type ProfileProps = {
   email: string
   username: string
   interests: string[]
+  height?: number
+  name?: string
+  horoscope?: string
+  weight?: number
+  birthday?: string
 }
 
 export type InterestProps = {
@@ -70,7 +76,17 @@ export type InterestProps = {
 export type PartialUpdateProps = {
   name: string
   birthday: string
-  height: number | string
-  weight: number | string
+  height: number | null
+  weight: number | null
   interests: string[]
+}
+
+export type LoginProps = {
+  access_token: string,
+  message: string
+}
+
+export type ReactSelectProps = {
+  label: string
+  value: string
 }
